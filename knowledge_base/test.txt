@@ -1,0 +1,25 @@
+### General Knowledge ###
+- The Eiffel Tower is located in Paris, France, and was constructed in 1889.
+- The Great Wall of China stretches over 13,000 miles and was built to protect Chinese states from invasions.
+- The largest ocean on Earth is the Pacific Ocean.
+- The human body has 206 bones.
+
+### Technology ###
+- Python is a high-level programming language that supports multiple programming paradigms, including procedural, object-oriented, and functional programming.
+- HTML stands for HyperText Markup Language and is used to structure content on the web.
+- Artificial Intelligence (AI) enables machines to perform tasks that typically require human intelligence, such as decision-making and language translation.
+
+### Science ###
+- Water boils at 100°C (212°F) at sea level.
+- The speed of light in a vacuum is approximately 299,792 kilometers per second.
+- Photosynthesis is the process by which green plants use sunlight to synthesize nutrients from carbon dioxide and water.
+
+### Geography ###
+- Mount Everest, the world's highest peak, is 8,848 meters (29,029 feet) above sea level.
+- Africa is the second-largest continent and has 54 countries.
+- The Amazon Rainforest produces 20% of the world's oxygen.
+
+### History ###
+- The first man to walk on the moon was Neil Armstrong, in 1969.
+- World War II lasted from 1939 to 1945.
+- The Roman Empire was one of the most powerful civilizations in history and lasted for over 1,000 years.

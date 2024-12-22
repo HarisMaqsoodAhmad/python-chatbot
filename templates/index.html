@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AI Agent Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        .chat-container {
+            width: 50%;
+            max-width: 600px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-messages .message {
+            display: flex;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 70%;
+        }
+
+        .chat-messages .user {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .chat-messages .bot {
+            background-color: #e5e5e5;
+            color: black;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .chat-input button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .chat-input button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-container">
+        <h1>AI Agent</h1>
+        <div class="chat-messages" id="chatMessages">
+            <!-- Chat messages will appear here -->
+        </div>
+
+        <div class="chat-input">
+            <input type="text" id="question" placeholder="Ask a question..." required onkeypress="checkEnter(event)">
+            <button onclick="askQuestion()">Submit</button>
+            <button onclick="resetChat()" style="background-color: #dc3545;">Start Over</button>
+        </div>
+
+    </div>
+
+    <script>
+        async function askQuestion() {
+            const questionInput = document.getElementById("question");
+            const question = questionInput.value.trim();
+            const chatMessages = document.getElementById("chatMessages");
+
+            if (!question) {
+                alert("Please enter a question.");
+                return;
+            }
+
+            // Append user's message to chat
+            const userMessage = document.createElement("div");
+            userMessage.className = "message user";
+            userMessage.innerText = question;
+            chatMessages.appendChild(userMessage);
+
+            // Scroll to the latest message
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Clear input field
+            questionInput.value = "";
+
+            // Append a loader placeholder for bot response
+            const botMessage = document.createElement("div");
+            botMessage.className = "message bot";
+            botMessage.innerHTML = "<em>Bot is typing...</em>";
+            chatMessages.appendChild(botMessage);
+
+            // Scroll to the latest message
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                // Simulate typing delay (optional)
+                await new Promise((resolve) => setTimeout(resolve, 2000));
+
+                // Send question to server
+                const response = await fetch("/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `question=${encodeURIComponent(question)}`,
+                });
+
+                const answer = await response.text();
+
+                // Replace loader with bot's actual response
+                botMessage.innerText = answer;
+
+                // Scroll to the latest message
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                console.error("Error:", error);
+
+                // Replace loader with error message
+                botMessage.innerText = "An error occurred. Please try again.";
+            }
+        }
+
+        function checkEnter(event) {
+            if (event.key === "Enter") {
+                askQuestion();
+            }
+        }
+
+        function resetChat() {
+            if (confirm("Are you sure you want to start over? This will clear the chat history.")) {
+                const chatMessages = document.getElementById("chatMessages");
+                chatMessages.innerHTML = "";
+                const botMessage = document.createElement("div");
+                botMessage.className = "message bot";
+                botMessage.innerText = "Chat has been reset. You can start over.";
+                chatMessages.appendChild(botMessage);
+            }
+        }
+    </script>
+</body>
+
+</html>
