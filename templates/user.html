@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom right, #6a11cb, #2575fc);
+            overflow: hidden;
+        }
+
+        .chat-container {
+            background: #ffffff;
+            width: 90%;
+            max-width: 600px;
+            height: 80%;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .chat-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-messages .message {
+            display: flex;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 70%;
+        }
+
+        .chat-messages .user {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .chat-messages .bot {
+            background-color: #e5e5e5;
+            color: black;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .chat-input button {
+            padding: 12px 20px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .chat-input button:hover {
+            background: linear-gradient(to left, #6a11cb, #2575fc);
+            transform: scale(1.02);
+        }
+
+        .logout {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .logout a {
+            color: #2575fc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .logout a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">Welcome, User!</div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- Chat messages will dynamically appear here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="question" placeholder="Ask a question..." required>
+            <button onclick="askQuestion()">Submit</button>
+        </div>
+        <div class="logout">
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <script>
+        async function askQuestion() {
+            const questionInput = document.getElementById("question");
+            const question = questionInput.value.trim();
+            const chatMessages = document.getElementById("chatMessages");
+
+            if (!question) {
+                alert("Please enter a question.");
+                return;
+            }
+
+            // Append user's message to chat
+            const userMessage = document.createElement("div");
+            userMessage.className = "message user";
+            userMessage.innerText = question;
+            chatMessages.appendChild(userMessage);
+
+            // Append loader for bot response
+            const botMessage = document.createElement("div");
+            botMessage.className = "message bot";
+            botMessage.innerHTML = "<em>Bot is typing...</em>";
+            chatMessages.appendChild(botMessage);
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            questionInput.value = "";
+
+            try {
+                // Send question to server via AJAX
+                const response = await fetch("/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `question=${encodeURIComponent(question)}`,
+                });
+
+                const answer = await response.text();
+                botMessage.innerText = answer;  // Replace loader with bot response
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                console.error("Error:", error);
+                botMessage.innerText = "An error occurred. Please try again.";
+            }
+        }
+
+        // Optional: Submit on pressing Enter key
+        document.getElementById("question").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                askQuestion();
+            }
+        });
+    </script>
+</body>
+</html>

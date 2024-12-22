@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom right, #6a11cb, #2575fc);
+            overflow: hidden;
+        }
+
+        .admin-container {
+            background: #ffffff;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .admin-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .message.success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+
+        .file-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .file-list h2 {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .file-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .file-list li {
+            background: #f9f9f9;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-list li span {
+            font-weight: bold;
+        }
+
+        .file-list li a {
+            color: #2575fc;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .file-list li a:hover {
+            text-decoration: underline;
+        }
+
+        .file-list button {
+            padding: 5px 10px;
+            background: #dc3545;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .file-list button:hover {
+            background: #b02a37;
+        }
+
+        form.upload-form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+            text-align: left;
+        }
+
+        input[type="file"] {
+            display: block;
+            margin: 0 auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: linear-gradient(to left, #6a11cb, #2575fc);
+            transform: scale(1.02);
+        }
+
+        .logout {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .logout a {
+            color: #2575fc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .logout a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">Welcome, Admin!</div>
+
+        <!-- Display Message -->
+        {% if message %}
+        <div class="message {{ 'success' if 'successfully' in message else 'error' }}">
+            {{ message }}
+        </div>
+        {% endif %}
+
+        <!-- File Upload Form -->
+        <form method="POST" enctype="multipart/form-data" class="upload-form">
+            <label for="file">Upload Knowledge Base:</label>
+            <input type="file" name="file" id="file" required>
+            <button type="submit">Upload</button>
+        </form>
+
+        <!-- Existing Files Section -->
+        <div class="file-list">
+            <h2>Existing Files</h2>
+            <ul>
+                {% for file in files %}
+                <li>
+                    <span>{{ file }}</span>
+                    <a href="/download/{{ file }}" target="_blank">Download</a>
+                    <form method="POST" action="/delete/{{ file }}" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Logout -->
+        <div class="logout">
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+</body>
+</html>
